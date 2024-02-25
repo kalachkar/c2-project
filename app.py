@@ -19,6 +19,7 @@ def handle_command():
     elif request.method == 'POST':
         data = request.get_json()
         command = data['command']
+        
         try:
             with open('Command.txt', 'a+') as file:
                 file.write(command + '\n')
