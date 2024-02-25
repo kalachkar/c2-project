@@ -15,16 +15,17 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            font-size: 14px; /* Adjust the font size here */
         }
 
         .container {
             background-color: #000000;
-            padding: 40px;
+            padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
             text-align: center;
-            max-width: 600px;
             width: 100%;
+            max-width: 600px;
         }
 
         h1 {
@@ -67,8 +68,14 @@
             color: #000000;
         }
 
-        #output {
+        .output-container {
             margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .output-container > div {
             padding: 20px;
             border: 2px solid #00ff00;
             border-radius: 5px;
@@ -76,6 +83,47 @@
             text-align: left;
             font-size: 16px;
             color: #00ff00;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .output-title {
+            color: #00ff00;
+            font-size: 24px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            font-weight: normal;
+        }
+
+        @media screen and (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            textarea {
+                width: calc(100% - 20px);
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            button {
+                padding: 10px 30px;
+                font-size: 14px;
+            }
+
+            .output-container > div {
+                padding: 15px;
+                font-size: 14px;
+            }
+
+            .output-title {
+                font-size: 20px;
+            }
         }
     </style>
 </head>
@@ -85,7 +133,11 @@
         <textarea id="textInput" rows="6" placeholder="Enter your command here..."></textarea><br>
         <button onclick="sendCommand()">Execute</button><br>
         <h2>Output:</h2>
-        <div id="output"></div>
+        <div class="output-container">
+            <div id="output"></div>
+            <h2 class="output-title">Input from C2 Beacon</h2>
+            <div id="result"></div>
+        </div>
     </div>
 
     <script>
@@ -106,6 +158,24 @@
                 console.error('Error:', error);
             });
         }
+
+        // Function to fetch and update result in real time
+        function updateResult() {
+            fetch('/result')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("result").innerText = data.result;
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Update result initially
+        updateResult();
+
+        // Update result every 5 seconds (adjust as needed)
+        setInterval(updateResult, 5000);
     </script>
 </body>
 </html>
