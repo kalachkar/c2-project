@@ -37,7 +37,7 @@
             font-weight: normal;
         }
 
-        textarea {
+        textarea, input[type="text"] {
             width: calc(100% - 40px);
             padding: 15px;
             margin-bottom: 20px;
@@ -105,7 +105,7 @@
                 font-size: 28px;
             }
 
-            textarea {
+            textarea, input[type="text"] {
                 width: calc(100% - 20px);
                 padding: 10px;
                 font-size: 14px;
@@ -130,8 +130,11 @@
 <body>
     <div class="container">
         <h1>C2 Command Center</h1>
-        <textarea id="textInput" rows="6" placeholder="Enter your command here..."></textarea><br>
-        <button onclick="sendCommand()">Execute</button><br>
+        <!-- Input field for token -->
+        <input type="text" id="tokenInput" placeholder="Enter your token..." /><br />
+        <!-- Your existing textarea and button -->
+        <textarea id="textInput" rows="6" placeholder="Enter your command here..."></textarea><br />
+        <button onclick="sendCommand()">Execute</button><br />
         <h2>Output:</h2>
         <div class="output-container">
             <div id="output"></div>
@@ -142,22 +145,28 @@
 
     <script>
         function sendCommand() {
-            var command = document.getElementById("textInput").value;
-            fetch('/command', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ command: command }),
-            })
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById("output").innerText = data;
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-        }
+    var command = document.getElementById("textInput").value;
+    var token = document.getElementById("tokenInput").value;
+    
+    // Construct the command with token
+    var commandWithToken = token ? "[" + token + "]: " + command : command;
+    
+    fetch('/command', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ command: commandWithToken }), // Send the command with token
+    })
+    .then(response => response.json()) // Parse response as JSON
+    .then(data => {
+        document.getElementById("output").innerText = 'Command <' + command + '> sent successfully.';
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+}
+
 
         // Function to fetch and update result in real time
         function updateResult() {
