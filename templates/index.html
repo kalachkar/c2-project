@@ -141,7 +141,14 @@
             <h2 class="output-title">Input from C2 Beacon</h2>
             <div id="result"></div>
         </div>
+        <h2>Uploaded Files:</h2>
+        <div class="file-list">
+            {% for file in files %}
+            <a href="{{ url_for('uploaded_file', filename=file) }}">{{ file }}</a><br>
+            {% endfor %}
+        </div>
     </div>
+
 
     <script>
         function sendCommand() {
